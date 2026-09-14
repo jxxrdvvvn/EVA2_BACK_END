@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ accion }} Registro</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+        body { background: #0f172a; color: #f8fafc; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
+        .card { background: #1e293b; border: 1px solid #334155; padding: 36px; border-radius: 12px; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.5); width: 100%; max-width: 420px; }
+        h2 { font-size: 20px; font-weight: 600; margin-bottom: 24px; border-bottom: 1px solid #334155; padding-bottom: 12px; color: #f8fafc; }
+        .form-group { margin-bottom: 18px; }
+        label { display: block; font-size: 13px; font-weight: 500; margin-bottom: 6px; color: #cbd5e1; }
+        input, select { width: 100%; padding: 10px 14px; background: #0f172a; border: 1px solid #334155; border-radius: 6px; color: #fff; font-size: 14px; outline: none; }
+        input:focus, select:focus { border-color: #3b82f6; }
+        .actions { display: flex; gap: 12px; margin-top: 24px; }
+        button { flex: 1; padding: 11px; background: #2563eb; color: #fff; border: none; border-radius: 6px; font-size: 14px; font-weight: 600; cursor: pointer; transition: background 0.2s; }
+        button:hover { background: #1d4ed8; }
+        .btn-cancel { flex: 1; text-align: center; padding: 11px; background: transparent; border: 1px solid #334155; color: #cbd5e1; border-radius: 6px; font-size: 14px; font-weight: 500; text-decoration: none; transition: background 0.2s; }
+        .btn-cancel:hover { background: #0f172a; }
+        .error { background: rgba(239, 68, 68, 0.1); border: 1px solid #ef4444; color: #fca5a5; font-size: 13px; padding: 10px; border-radius: 6px; margin-bottom: 18px; }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <h2>{{ accion }} Registro</h2>
+        {% if error %}
+            <div class="error">{{ error }}</div>
+        {% endif %}
+        <form method="POST">
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="nombre">Nombre del Producto</label>
+                <input type="text" id="nombre" name="nombre" value="{{ registro.nombre|default:'' }}" required placeholder="Ej: Teclado Mecánico">
+            </div>
+            <div class="form-group">
+                <label for="cantidad">Cantidad Solicitada</label>
+                <input type="number" id="cantidad" name="cantidad" value="{{ registro.cantidad|default:'' }}" required placeholder="0">
+            </div>
+            <div class="form-group">
+                <label for="estado">Estado del Cliente</label>
+                <select id="estado" name="estado">
+                    <option value="al dia" {% if registro.estado == "al dia" %}selected{% endif %}>Al día</option>
+                    <option value="moroso" {% if registro.estado == "moroso" %}selected{% endif %}>Moroso</option>
+                </select>
+            </div>
+            <div class="actions">
+                <button type="submit">Guardar</button>
+                <a href="{% url 'lista' %}" class="btn-cancel">Cancelar</a>
+            </div>
+        </form>
+    </div>
+</body>
+</html>

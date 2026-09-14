@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registros del Sistema</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+        body { background: #0f172a; color: #f8fafc; padding: 40px 20px; }
+        .container { max-width: 1100px; margin: 0 auto; }
+        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; border-bottom: 1px solid #334155; padding-bottom: 20px; }
+        .header h2 { font-size: 24px; font-weight: 600; letter-spacing: -0.5px; }
+        .user-tag { font-size: 13px; color: #94a3b8; background: #1e293b; padding: 6px 12px; border-radius: 20px; border: 1px solid #334155; }
+        .actions { display: flex; gap: 12px; align-items: center; }
+        .btn { padding: 9px 16px; text-decoration: none; border-radius: 6px; font-size: 13px; font-weight: 600; display: inline-flex; align-items: center; transition: all 0.2s; border: none; cursor: pointer; }
+        .btn-blue { background: #2563eb; color: #fff; }
+        .btn-blue:hover { background: #1d4ed8; }
+        .btn-outline { background: transparent; border: 1px solid #334155; color: #cbd5e1; }
+        .btn-outline:hover { background: #1e293b; color: #fff; }
+        .btn-sm-edit { background: #334155; color: #38bdf8; padding: 6px 10px; font-size: 12px; }
+        .btn-sm-edit:hover { background: #0284c7; color: #fff; }
+        .btn-sm-del { background: #334155; color: #f87171; padding: 6px 10px; font-size: 12px; }
+        .btn-sm-del:hover { background: #dc2626; color: #fff; }
+        .table-card { background: #1e293b; border: 1px solid #334155; border-radius: 12px; overflow: hidden; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.3); }
+        table { width: 100%; border-collapse: collapse; text-align: left; }
+        th { background: #0f172a; color: #94a3b8; font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px; padding: 14px 20px; border-bottom: 1px solid #334155; }
+        td { padding: 16px 20px; font-size: 14px; border-bottom: 1px solid #334155; color: #e2e8f0; }
+        tr:last-child td { border-bottom: none; }
+        tr:hover td { background: #26334d; }
+        
+        /* Badges de Estado y Resultado */
+        .badge { padding: 6px 12px; border-radius: 20px; font-size: 12px; font-weight: 600; display: inline-flex; align-items: center; gap: 4px; }
+        .badge-aceptado { background: rgba(34, 197, 94, 0.15); color: #4ade80; border: 1px solid #22c55e; }
+        .badge-rechazado { background: rgba(239, 68, 68, 0.15); color: #f87171; border: 1px solid #ef4444; }
+
+        .msg { background: rgba(239, 68, 68, 0.1); border: 1px solid #ef4444; color: #fca5a5; padding: 12px; border-radius: 8px; margin-bottom: 20px; font-size: 14px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div>
+                <h2>Registros de Despacho</h2>
+            </div>
+            <div class="actions">
+                <span class="user-tag">Usuario: {{ request.user.username }}</span>
+                <a href="{% url 'crear' %}" class="btn btn-blue">+ Nuevo Registro</a>
+                <a href="{% url 'logout' %}" class="btn btn-outline">Salir</a>
+            </div>
+        </div>
+
+        {% if messages %}
+            {% for message in messages %}
+                <div class="msg">{{ message }}</div>
+            {% endfor %}
+        {% endif %}
+
+        <div class="table-card">
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Producto</th>
+                        <th>Cantidad</th>
+                        <th>Estado</th>
+                        <th>Resultado</th>
+                        <th style="text-align: right;">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for r in registros %}
+                    <tr>
+                        <td style="color: #64748b; font-weight: 600;">#{{ r.id }}</td>
+                        <td style="font-weight: 500;">{{ r.nombre }}</td>
+                        <td>{{ r.cantidad }}</td>
+                        
+                        <!-- Columna ESTADO: Aceptado (Verde) / Rechazado (Rojo) -->
+                        <td>
+                            {% if 'aprobado' in r.resultado|lower or 'aceptado' in r.resultado|lower %}
+                                <span class="badge badge-aceptado">Aceptado</span>
+                            {% else %}
+                                <span class="badge badge-rechazado">Rechazado</span>
+                            {% endif %}
+                        </td>
+
+                        <!-- Columna RESULTADO: Detalle en texto -->
+                        <td>
+                            {% if 'aprobado' in r.resultado|lower or 'aceptado' in r.resultado|lower %}
+                                <span class="badge badge-aceptado">✓ {{ r.resultado }}</span>
+                            {% else %}
+                                <span class="badge badge-rechazado">✕ {{ r.resultado }}</span>
+                            {% endif %}
+                        </td>
+
+                        <td style="text-align: right;">
+                            <div style="display: inline-flex; gap: 6px;">
+                                <a href="{% url 'editar' r.id %}" class="btn btn-sm-edit">Editar</a>
+                                <a href="{% url 'eliminar' r.id %}" class="btn btn-sm-del">Eliminar</a>
+                            </div>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="6" style="text-align: center; color: #64748b; padding: 40px;">No hay registros cargados en la base de datos.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</body>
+</html>

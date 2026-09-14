@@ -1,0 +1,28 @@
+# Proyecto Web Django - EVA2
+
+Sistema web desarrollado en Django para la gestión y control de despacho de productos, con autenticación de usuarios y operaciones CRUD.
+
+## Características
+
+- **Autenticación:** Inicio y cierre de sesión de usuarios.
+- **Gestión de Registros (CRUD):** Listado, creación, edición y eliminación (borrado lógico/físico) de despachos.
+- **Interfaz Moderna:** Diseño responsive en tema oscuro (*Slate Dark Modern*).
+- **Badges de Estado Visuales:** Diferenciación rápida mediante colores (Verde = Aceptado / Rojo = Rechazado).
+
+## Estructura de Plantillas (`core/templates/`)
+
+- `login.html`: Formulario de inicio de sesión.
+- `lista.html`: Tabla principal con registros, estados estilizados y acciones.
+- `form.html`: Formulario único para la creación y edición de registros.
+- `confirmar.html`: Modal/pantalla de confirmación antes de eliminar.
+
+## Requisitos e Instalación
+
+1. Clonar el repositorio.
+2. Activar el entorno virtual e instalar Django:
+   ```bash
+   pip install django
+3. Ejecutar migraciones
+   python manage.py migrate
+4. Iniciar el servidor de desarrollo:
+   python manage.py runserver
